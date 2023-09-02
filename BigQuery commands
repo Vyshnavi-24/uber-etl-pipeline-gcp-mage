@@ -1,0 +1,59 @@
+BigQuery commands
+
+
+select VendorID, AVG(fare_amount) from `ubertestproject-397515.Uver_dataset.fact_table`
+GROUP BY VendorID;
+
+--- FIND THE TOP 10 PICKUP LOCATIONS BASED ON NUMBER OF TRIPS
+SELECT b.PULocationID,count(*) as number_of_trips FROM `ubertestproject-397515.Uver_dataset.fact_table` a
+JOIN `Uver_dataset.pickup_Location_dim` b
+ON a.pickup_Location_id = b.pickup_Location_id group by b.PULocationID order by number_of_trips desc limit 10;
+
+
+---FIND TOTAL NUMBER OF TRIPS BY PASSANGER COUNT
+
+SELECT b.passenger_count, COUNT(*) AS number_of_trips FROM `ubertestproject-397515.Uver_dataset.fact_table` a
+JOIN `ubertestproject-397515.Uver_dataset.passengercount_dim` b
+ON a.passengercount_id = b.passengercount_id
+GROUP BY b.passenger_count ORDER BY number_of_trips
+
+
+
+--FIND THE AVERAGE FARE AMOUNT BY HOUR OF A DAY
+
+SELECT AVG(fare_amount) as fare_amt_avg FROM `ubertestproject-397515.Uver_dataset.fact_table` a
+JOIN `ubertestproject-397515.Uver_dataset.datetime_dim` b
+ON a.datetime_id = b.datetime_id
+GROUP BY b.pickup_hour
+
+---Creating table with all files final table
+
+CREATE OR REPLACE TABLE `ubertestproject-397515.Uver_dataset.table_analytics` AS (
+SELECT 
+a.VendorID,
+d.pickup_year,d.pickup_month,d.pickup_day,d.pickup_hour,d.pickup_weekday,d.dropoff_year,d.dropoff_month,d.dropoff_day,d.dropoff_hour,d.dropoff_weekday,
+p.passengercount_id,
+t.trip_distance,
+r.RatecodeID_name,
+s.store_and_fwd_flag_name,
+pk.PULocationID,
+do.DOLocationID,
+pay.payment_name,
+a.fare_amount,
+a.extra,
+a.mta_tax,
+a.tip_amount,
+a.tolls_amount,
+a.improvement_surcharge,
+a.total_amount,
+a.congestion_surcharge,
+a.airport_fee,
+FROM `ubertestproject-397515.Uver_dataset.fact_table` a
+JOIN `ubertestproject-397515.Uver_dataset.datetime_dim` d ON a.datetime_id = d.datetime_id
+JOIN `ubertestproject-397515.Uver_dataset.passengercount_dim` p ON a.passengercount_id = p.passengercount_id
+JOIN `ubertestproject-397515.Uver_dataset.trip_distance_dim` t ON a.distance_id = t.distance_id
+JOIN `ubertestproject-397515.Uver_dataset.RatecodeID_dim` r ON a.Ratecode_id = r.Ratecode_id
+JOIN `ubertestproject-397515.Uver_dataset.store_and_fwd_flag_dim` s ON a.store_and_fwd_flag_id = s.store_and_fwd_flag_id
+JOIN `ubertestproject-397515.Uver_dataset.pickup_Location_dim` pk ON a.pickup_Location_id = pk.pickup_Location_id 
+JOIN `ubertestproject-397515.Uver_dataset.dropoff_location_dim` do ON a.dropoff_location_id = do.dropoff_location_id
+JOIN `ubertestproject-397515.Uver_dataset.payment_dim` pay On a.payment_id = pay.payment_id);
