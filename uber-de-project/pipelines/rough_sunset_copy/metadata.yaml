@@ -1,0 +1,66 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - uber_data_transformer
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Uber-data-loader
+  retry_config: null
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: uber_data_loader
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - uber_bq_loader
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: uber_data_transformer
+  retry_config: null
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - uber_data_loader
+  uuid: uber_data_transformer
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: uber_bq_loader
+  retry_config: null
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - uber_data_transformer
+  uuid: uber_bq_loader
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2023-09-01 11:44:39.512938+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+name: rough_sunset_copy
+notification_config: {}
+retry_config: {}
+run_pipeline_in_one_process: false
+spark_config: {}
+tags: []
+type: python
+updated_at: '2023-09-01 19:21:18'
+uuid: rough_sunset_copy
+widgets: []
